@@ -7,4 +7,4 @@ before_install:
   - sudo docker --version
 
 script:
-  - sudo docker run -it --rm ubuntu echo "hello world"
+  - sudo docker build .
