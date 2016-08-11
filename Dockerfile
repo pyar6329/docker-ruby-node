@@ -5,7 +5,8 @@ ARG NPM_VERSION=3
 ARG NODE_VERSION=v6.3.1
 ARG BUILD_PACKAGES_NODE="curl make gcc g++ python linux-headers paxctl libgcc libstdc++ gnupg openssl-dev ca-certificates"
 
-RUN apk add --no-cache --virtual .build-packages-node ${BUILD_PACKAGES_NODE} \
+RUN set -x \
+    && apk add --no-cache --virtual .build-packages-node ${BUILD_PACKAGES_NODE} \
     && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys \
         9554F04D7259F04124DE6B476D5A82AC7E37093B \
         94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
