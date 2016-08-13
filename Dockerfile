@@ -3,10 +3,12 @@ MAINTAINER Tsukasa Arima
 
 ARG NPM_VERSION=3
 ARG NODE_VERSION=v6.3.1
-ARG BUILD_PACKAGES_NODE="curl make gcc g++ python linux-headers paxctl libgcc libstdc++ gnupg openssl-dev ca-certificates"
+ARG BUILD_PACKAGES_NODE="curl make gcc g++ python linux-headers paxctl gnupg openssl-dev ca-certificates"
+ARG REQUIRE_PACKAGES_NODE="libgcc libstdc++"
 
 RUN set -x \
     && apk add --no-cache --virtual .build-packages-node ${BUILD_PACKAGES_NODE} \
+    && apk add --no-cache ${REQUIRE_PACKAGES_NODE} \
     && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys \
         9554F04D7259F04124DE6B476D5A82AC7E37093B \
         94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
@@ -37,7 +39,11 @@ RUN set -x \
     fi \
     && gem update --system \
     && gem update bundler \
-    && npm install -g npm \
+    && cd $(npm root -g)/npm \
+    && npm install -g fs-extra \
+    && sed -i -e s/graceful-fs/fs-extra/ -e s/fs\.rename/fs.move/ ./lib/utils/rename.js \
+    && cd / \
+    && npm update -g npm \
     && apk del .build-packages-node \
     && rm -rf /etc/ssl /node-${NODE_VERSION}.tar.gz /SHASUMS256.txt.asc /node-${NODE_VERSION} \
       /usr/share/man /tmp/* /var/cache/apk/* /root/.npm /root/.node-gyp /root/.gnupg \
