@@ -4,8 +4,9 @@ build_environment: Ubuntu 14.04
 
 build:
   ci:
-    - sudo docker build -t pyar6329/ruby-node:2.3.1-6.3.1 .
-    - sudo docker push pyar6329/ruby-node:2.3.1-6.3.1
+    - docker build -t pyar6329/ruby-node:2.3.1-6.3.1 .
+  post_ci:
+    - if [ "$IS_PULL_REQUEST" == "false" ] && [ "$BRANCH" == "master" ]; then docker push pyar6329/ruby-node:2.3.1-6.3.1; fi
 integrations:
   hub:
     - integrationName: ruby-node
